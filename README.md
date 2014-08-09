@@ -1,10 +1,10 @@
 TypeLess.Mail
 =============
 
-A fluent async send mail lib based on Razor templates 
+##A fluent async send mail lib based on Razor templates##
 
-Sample usage
-
+**Sample usage**
+``` c#
 public static async Task<SendMailResult> SendTestMail() {
             return await MailBuilder.Create(new TemplateService())
                     .Configure.SMTPServer("localhost").Done
@@ -21,3 +21,4 @@ public static async Task<SendMailResult> SendTestMail() {
                     .To(new Contact("tobias.jansater@symbio.com", ContactType.To))
                     .Send();
         }
+```
