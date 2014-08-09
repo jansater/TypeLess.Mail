@@ -3,6 +3,8 @@ TypeLess.Mail
 
 ##A fluent async send mail lib based on Razor templates##
 
+### Available on nuget > Install-Package TypeLess.Mail ###
+
 **Sample usage**
 ``` c#
 public static async Task<SendMailResult> SendTestMail() {
