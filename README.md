@@ -8,7 +8,7 @@ TypeLess.Mail
 public static async Task<SendMailResult> SendTestMail() {
             return await MailBuilder.Create(new TemplateService())
                     .Configure.SMTPServer("localhost").Done
-                    .From("tobias.jansater@rapidsolutions.se", "Tobias Jansäter")
+                    .From("someuser@somedomain.se", "Sender name")
                     .WithSubject("Some subject")
                     .AndTemplate("SampleTemplate.cshtml", new { Name = "Test User" })
                     .AddAttachments(new Attachment(File.OpenRead(@"c:/Somefile.pdf"), "Some file", System.Net.Mime.MediaTypeNames.Application.Pdf))
@@ -18,7 +18,7 @@ public static async Task<SendMailResult> SendTestMail() {
                         Location = "The usual place",
                         Summary = "We need to go through some new features"
                     })
-                    .To(new Contact("tobias.jansater@symbio.com", ContactType.To))
+                    .To(new Contact("recipient@somedomain.com", ContactType.To))
                     .Send();
         }
 ```
