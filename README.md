@@ -3,6 +3,8 @@ TypeLess.Mail
 
 ##A fluent async send mail lib based on Razor templates##
 
+###Licensed under MIT, feel free to use in commercial projects###
+
 ### Available on nuget > Install-Package TypeLess.Mail ###
 
 **Sample usage**
