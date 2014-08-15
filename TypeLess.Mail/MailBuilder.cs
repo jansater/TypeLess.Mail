@@ -282,7 +282,11 @@ namespace TypeLess.Mail
 
                     if (_mail.From != null)
                     {
-                        message.From = new MailAddress(_mail.From.MailAddress, _mail.From.Name);
+                        //always send from the default from address if that is available to
+                        //avoid mails being marked as garbage.
+
+                        message.From = new MailAddress(_mail.Settings.SMTPUserEmail ?? _mail.From.MailAddress, _mail.From.Name);
+                        //message.From = new MailAddress(_mail.From.MailAddress, _mail.From.Name);
                         Organizer = _mail.From;
                     }
                     else
