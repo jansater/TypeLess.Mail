@@ -359,15 +359,16 @@ namespace TypeLess.Mail
                         htmlType.CharSet = "UTF-8";
                     }
 
-                    var htmlView = AlternateView.CreateAlternateViewFromString(_mail.Body, htmlType);
-                    message.AlternateViews.Add(htmlView);
-
                     var plainText = ConvertToPlainText(_mail.Body);
-                    if (plainText != null) {
+                    if (plainText != null)
+                    {
                         var textView = AlternateView.CreateAlternateViewFromString(plainText, textType);
                         message.AlternateViews.Add(textView);
                     }
                     
+                    var htmlView = AlternateView.CreateAlternateViewFromString(_mail.Body, htmlType);
+                    message.AlternateViews.Add(htmlView);
+
                     if (_mail.Meeting != null)
                     {
                         _mail.Meeting.Summary = _mail.Subject;

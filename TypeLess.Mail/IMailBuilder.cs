@@ -51,6 +51,7 @@ namespace TypeLess.Mail
         /// Defaults to false
         /// </summary>
         IMailConfiguration EnableSSL { get; }
+        
         IMailConfiguration SmtpDefaultFromEmail(string email);
         /// <summary>
         /// Defaults to 25
