@@ -63,7 +63,7 @@ namespace TypeLess.Mail
         public IMailConfiguration RequiresSMTPAuthentication(string username, string password)
         {
             username.If("username").Or(password, "password").IsNull.IsEmptyOrWhitespace.ThenThrow();
-
+            _mail.Settings.SMTPAuthentication = true;
             _mail.Settings.SMTPUsername = username;
             _mail.Settings.SMTPPassword = password;
             
@@ -282,11 +282,7 @@ namespace TypeLess.Mail
 
                     if (_mail.From != null)
                     {
-                        //always send from the default from address if that is available to
-                        //avoid mails being marked as garbage.
-
-                        message.From = new MailAddress(_mail.Settings.SMTPUserEmail ?? _mail.From.MailAddress, _mail.From.Name);
-                        //message.From = new MailAddress(_mail.From.MailAddress, _mail.From.Name);
+                        message.From = new MailAddress(_mail.From.MailAddress, _mail.From.Name);
                         Organizer = _mail.From;
                     }
                     else
