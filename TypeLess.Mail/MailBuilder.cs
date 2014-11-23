@@ -60,14 +60,15 @@ namespace TypeLess.Mail
             return this;
         }
 
-        public IMailConfiguration RequiresSMTPAuthentication(string username, string password)
+        public IMailConfiguration RequiresSMTPAuthentication(bool enable, string username, string password)
         {
-            username.If("username").Or(password, "password").IsNull.IsEmptyOrWhitespace.ThenThrow();
-            _mail.Settings.SMTPAuthentication = true;
-            _mail.Settings.SMTPUsername = username;
-            _mail.Settings.SMTPPassword = password;
+            if (enable) {
+                username.If("username").Or(password, "password").IsNull.IsEmptyOrWhitespace.ThenThrow();
+                _mail.Settings.SMTPAuthentication = true;
+                _mail.Settings.SMTPUsername = username;
+                _mail.Settings.SMTPPassword = password;
+            }
             
-
             return this;
         }
 

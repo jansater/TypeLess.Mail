@@ -46,7 +46,7 @@ namespace TypeLess.Mail
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        IMailConfiguration RequiresSMTPAuthentication(string username, string password);
+        IMailConfiguration RequiresSMTPAuthentication(bool enable, string username, string password);
         /// <summary>
         /// Defaults to false
         /// </summary>
