@@ -137,7 +137,8 @@ namespace TypeLess.Mail
     public interface IMailReadyToSend : IFluentInterface
     {
         TypeLessMail GetMessage();
-        Task<SendMailResult> Send();
+        Task<SendMailResult> SendAsync();
+        SendMailResult Send();
         IPartialMailI Reset(bool keepSettings = true);
     } 
 }

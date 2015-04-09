@@ -26,9 +26,7 @@ namespace TypeLess.Mail
 
         private MailBuilder(ITemplateService _razorTemplateService)
         {
-            _razorTemplateService.If("razor template service").IsNull.ThenThrow();
             _templateService = _razorTemplateService;
-
             _mail = new TypeLessMail();
 
             _mail.Settings.SMTPAuthentication = false;
@@ -43,8 +41,14 @@ namespace TypeLess.Mail
             _mail.Settings.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
         }
 
-        public static IMailBuilder Create(ITemplateService service) {
+        public static IMailBuilder Create(ITemplateService service)
+        {
             return new MailBuilder(service);
+        }
+
+        public static IMailBuilder Create()
+        {
+            return new MailBuilder(null);
         }
 
         public IMailConfiguration Configure
@@ -62,17 +66,19 @@ namespace TypeLess.Mail
 
         public IMailConfiguration RequiresSMTPAuthentication(bool enable, string username, string password)
         {
-            if (enable) {
+            if (enable)
+            {
                 username.If("username").Or(password, "password").IsNull.IsEmptyOrWhitespace.ThenThrow();
                 _mail.Settings.SMTPAuthentication = true;
                 _mail.Settings.SMTPUsername = username;
                 _mail.Settings.SMTPPassword = password;
             }
-            
+
             return this;
         }
 
-        public IMailConfiguration TemplateDirectory(string directory) {
+        public IMailConfiguration TemplateDirectory(string directory)
+        {
             directory.If("username").IsNull.IsEmptyOrWhitespace.ThenThrow();
             _mail.Settings.TemplateDirectory = directory;
             return this;
@@ -130,20 +136,23 @@ namespace TypeLess.Mail
             return this;
         }
 
-        public IMailConfiguration SmtpDeliveryMethod(SmtpDeliveryMethod deliveryMethod) {
+        public IMailConfiguration SmtpDeliveryMethod(SmtpDeliveryMethod deliveryMethod)
+        {
             _mail.Settings.DeliveryMethod = deliveryMethod;
             return this;
         }
 
 
 
-        public IPartialMailI WithConfiguration(EmailSettings settings) {
+        public IPartialMailI WithConfiguration(EmailSettings settings)
+        {
             settings.If("settings").IsNull.ThenThrow();
             _mail.Settings = settings;
             return this;
         }
 
-        public EmailSettings GetSettings() {
+        public EmailSettings GetSettings()
+        {
             return _mail.Settings;
         }
 
@@ -162,17 +171,19 @@ namespace TypeLess.Mail
             return this;
         }
 
-        public IPartialMailII From(string email, string name = null) {
+        public IPartialMailII From(string email, string name = null)
+        {
             email.If("email").IsNull.IsNotValidEmail.ThenThrow();
 
             if (String.IsNullOrEmpty(name))
             {
                 _mail.From = new Contact(email);
             }
-            else {
+            else
+            {
                 _mail.From = new Contact(email, name);
             }
-            
+
             return this;
         }
 
@@ -203,6 +214,7 @@ namespace TypeLess.Mail
 
         public IPartialMailIIII AndTemplate<T>(string templateFileName, T templateData)
         {
+            _templateService.If("_templateService").IsNull.ThenThrow();
             var body = _templateService.Parse(File.ReadAllText(Path.Combine(_mail.Settings.TemplateDirectory, templateFileName)), templateData, null, templateFileName);
             _mail.Body = body;
             return this;
@@ -227,7 +239,8 @@ namespace TypeLess.Mail
             return this;
         }
 
-        public IPartialMailIIII AddMeeting(Meeting meeting) {
+        public IPartialMailIIII AddMeeting(Meeting meeting)
+        {
             meeting.If("meeting").IsNull.ThenThrow();
 
             _mail.Meeting = meeting;
@@ -268,150 +281,198 @@ namespace TypeLess.Mail
             }
         }
 
-        public async Task<SendMailResult> Send()
+        private MailMessage PrepareMailMessage()
         {
 
+            Contact Organizer = null;
+            MailMessage message = new MailMessage();
+
+
+            if (_mail.From != null)
+            {
+                message.From = new MailAddress(_mail.From.MailAddress, _mail.From.Name);
+                Organizer = _mail.From;
+            }
+            else
+            {
+                message.From = new MailAddress(_mail.Settings.SMTPUserEmail);
+                Organizer = new Contact(message.From.Address, message.From.DisplayName);
+            }
+
+            if (_mail.ReplyTo != null)
+            {
+                message.ReplyToList.Add(new MailAddress(_mail.ReplyTo.MailAddress, _mail.ReplyTo.Name));
+                Organizer = _mail.ReplyTo;
+            }
+
+            foreach (var contact in _mail.To)
+            {
+                if (contact.Type == ContactType.To || contact.Type == ContactType.Required)
+                {
+                    message.To.Add(new MailAddress(contact.MailAddress, contact.Name));
+                }
+                if (contact.Type == ContactType.Cc || contact.Type == ContactType.Optional)
+                {
+                    message.CC.Add(new MailAddress(contact.MailAddress, contact.Name));
+                }
+                if (contact.Type == ContactType.Bcc || contact.Type == ContactType.Resource)
+                {
+                    message.Bcc.Add(new MailAddress(contact.MailAddress, contact.Name));
+                }
+            }
+
+            if (_mail.Settings.SubjectEncoding != null)
+            {
+                message.SubjectEncoding = _mail.Settings.SubjectEncoding;
+            }
+            else
+            {
+                message.SubjectEncoding = System.Text.Encoding.UTF8;
+            }
+
+            if (_mail.Settings.BodyEncoding != null)
+            {
+                message.BodyEncoding = _mail.Settings.BodyEncoding;
+            }
+            else
+            {
+                message.BodyEncoding = System.Text.Encoding.UTF8;
+            }
+
+            message.Subject = _mail.Subject;
+
+            foreach (var attachment in _mail.Attachments)
+            {
+                message.Attachments.Add(new System.Net.Mail.Attachment(attachment.ContentStream, attachment.Name, attachment.MediaType));
+            }
+
+            string bodyText = _mail.Body;
+
+            //Set up the different mime types contained in the message    
+            System.Net.Mime.ContentType textType = new System.Net.Mime.ContentType(MediaTypeNames.Text.Plain);
+            System.Net.Mime.ContentType htmlType = new System.Net.Mime.ContentType(MediaTypeNames.Text.Html);
+
+            if (_mail.Settings.CharSet != null)
+            {
+                textType.CharSet = _mail.Settings.CharSet;
+                htmlType.CharSet = _mail.Settings.CharSet;
+            }
+            else
+            {
+                textType.CharSet = "UTF-8";
+                htmlType.CharSet = "UTF-8";
+            }
+
+            var plainText = ConvertToPlainText(_mail.Body);
+            if (plainText != null)
+            {
+                var textView = AlternateView.CreateAlternateViewFromString(plainText, textType);
+                message.AlternateViews.Add(textView);
+            }
+
+            var htmlView = AlternateView.CreateAlternateViewFromString(_mail.Body, htmlType);
+            message.AlternateViews.Add(htmlView);
+
+            if (_mail.Meeting != null)
+            {
+                _mail.Meeting.Summary = _mail.Subject;
+                _mail.Meeting.Description = bodyText;
+                message.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
+                System.Net.Mime.ContentType calendarType = new System.Net.Mime.ContentType("text/calendar");
+                calendarType.CharSet = htmlType.CharSet;
+                //  Add parameters to the calendar header    
+                calendarType.Parameters.Add("method", "REQUEST");
+                calendarType.Parameters.Add("name", "meeting.ics");
+
+                AlternateView calendarView = AlternateView.CreateAlternateViewFromString(_mail.Meeting.Generate(_mail.To, Organizer), calendarType);
+                calendarView.TransferEncoding = TransferEncoding.Base64;
+                message.AlternateViews.Add(calendarView);
+            }
+
+            return message;
+
+        }
+
+        private SmtpClient PrepareSmtpClient()
+        {
+            var host = _mail.Settings.SMTPServer;
+            int port = _mail.Settings.SMTPort;
+
+            if (host.IndexOf(":") > -1)
+            {
+                host = host.Split(':')[0];
+                port = Convert.ToInt32(host.Split(':')[1]);
+            }
+
+            SmtpClient mailClient = new SmtpClient(host, port);
+
+            mailClient.DeliveryMethod = _mail.Settings.DeliveryMethod;
+
+            if (_mail.Settings.SMTPAuthentication)
+            {
+                mailClient.UseDefaultCredentials = false;
+                mailClient.Credentials = new NetworkCredential(_mail.Settings.SMTPUsername, _mail.Settings.SMTPPassword);
+            }
+
+            mailClient.EnableSsl = _mail.Settings.SMTPEnableSSL;
+            if (_mail.Settings.SMTPEnableSSL)
+            {
+                mailClient.Port = _mail.Settings.SMTPSSLPort;
+            }
+            return mailClient;
+        }
+
+        public async Task<SendMailResult> SendAsync()
+        {
             var result = new SendMailResult();
 
             try
             {
-                #region SendEmail
 
-                Contact Organizer = null;
-                using (MailMessage message = new MailMessage())
+                using (var message = PrepareMailMessage())
                 {
-
-                    if (_mail.From != null)
+                    using (SmtpClient mailClient = PrepareSmtpClient())
                     {
-                        message.From = new MailAddress(_mail.From.MailAddress, _mail.From.Name);
-                        Organizer = _mail.From;
-                    }
-                    else
-                    {
-                        message.From = new MailAddress(_mail.Settings.SMTPUserEmail);
-                        Organizer = new Contact(message.From.Address, message.From.DisplayName);
-                    }
-
-                    if (_mail.ReplyTo != null)
-                    {
-                        message.ReplyToList.Add(new MailAddress(_mail.ReplyTo.MailAddress, _mail.ReplyTo.Name));
-                        Organizer = _mail.ReplyTo;
-                    }
-
-                    foreach (var contact in _mail.To)
-                    {
-                        if (contact.Type == ContactType.To || contact.Type == ContactType.Required)
-                        {
-                            message.To.Add(new MailAddress(contact.MailAddress, contact.Name));
-                        }
-                        if (contact.Type == ContactType.Cc || contact.Type == ContactType.Optional)
-                        {
-                            message.CC.Add(new MailAddress(contact.MailAddress, contact.Name));
-                        }
-                        if (contact.Type == ContactType.Bcc || contact.Type == ContactType.Resource)
-                        {
-                            message.Bcc.Add(new MailAddress(contact.MailAddress, contact.Name));
-                        }
-                    }
-
-                    if (_mail.Settings.SubjectEncoding != null)
-                    {
-                        message.SubjectEncoding = _mail.Settings.SubjectEncoding;
-                    }
-                    else
-                    {
-                        message.SubjectEncoding = System.Text.Encoding.UTF8;
-                    }
-
-                    if (_mail.Settings.BodyEncoding != null)
-                    {
-                        message.BodyEncoding = _mail.Settings.BodyEncoding;
-                    }
-                    else
-                    {
-                        message.BodyEncoding = System.Text.Encoding.UTF8;
-                    }
-
-                    message.Subject = _mail.Subject;
-
-                    foreach (var attachment in _mail.Attachments)
-                    {
-                        message.Attachments.Add(new System.Net.Mail.Attachment(attachment.ContentStream, attachment.Name, attachment.MediaType));
-                    }
-
-                    string bodyText = _mail.Body;
-
-                    //Set up the different mime types contained in the message    
-                    System.Net.Mime.ContentType textType = new System.Net.Mime.ContentType(MediaTypeNames.Text.Plain);
-                    System.Net.Mime.ContentType htmlType = new System.Net.Mime.ContentType(MediaTypeNames.Text.Html);
-
-                    if (_mail.Settings.CharSet != null)
-                    {
-                        textType.CharSet = _mail.Settings.CharSet;
-                        htmlType.CharSet = _mail.Settings.CharSet;
-                    }
-                    else
-                    {
-                        textType.CharSet = "UTF-8";
-                        htmlType.CharSet = "UTF-8";
-                    }
-
-                    var plainText = ConvertToPlainText(_mail.Body);
-                    if (plainText != null)
-                    {
-                        var textView = AlternateView.CreateAlternateViewFromString(plainText, textType);
-                        message.AlternateViews.Add(textView);
-                    }
-                    
-                    var htmlView = AlternateView.CreateAlternateViewFromString(_mail.Body, htmlType);
-                    message.AlternateViews.Add(htmlView);
-
-                    if (_mail.Meeting != null)
-                    {
-                        _mail.Meeting.Summary = _mail.Subject;
-                        _mail.Meeting.Description = bodyText;
-                        message.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
-                        System.Net.Mime.ContentType calendarType = new System.Net.Mime.ContentType("text/calendar");
-                        calendarType.CharSet = htmlType.CharSet;
-                        //  Add parameters to the calendar header    
-                        calendarType.Parameters.Add("method", "REQUEST");
-                        calendarType.Parameters.Add("name", "meeting.ics");
-
-                        AlternateView calendarView = AlternateView.CreateAlternateViewFromString(_mail.Meeting.Generate(_mail.To, Organizer), calendarType);
-                        calendarView.TransferEncoding = TransferEncoding.Base64;
-                        message.AlternateViews.Add(calendarView);
-                    }
-
-                    var host = _mail.Settings.SMTPServer;
-                    int port = _mail.Settings.SMTPort;
-
-                    if (host.IndexOf(":") > -1)
-                    {
-                        host = host.Split(':')[0];
-                        port = Convert.ToInt32(host.Split(':')[1]);
-                    }
-
-                    using (SmtpClient mailClient = new SmtpClient(host, port))
-                    {
-                        mailClient.DeliveryMethod = _mail.Settings.DeliveryMethod;
-
-                        if (_mail.Settings.SMTPAuthentication)
-                        {
-                            mailClient.UseDefaultCredentials = false;
-                            mailClient.Credentials = new NetworkCredential(_mail.Settings.SMTPUsername, _mail.Settings.SMTPPassword);
-                        }
-
-                        mailClient.EnableSsl = _mail.Settings.SMTPEnableSSL;
-                        if (_mail.Settings.SMTPEnableSSL)
-                        {
-                            mailClient.Port = _mail.Settings.SMTPSSLPort;
-                        }
-
                         await mailClient.SendMailAsync(message);
                     }
+                    result.State = SendMailState.Ok;
+                }
 
-                #endregion
+            }
+            catch (FormatException ex)
+            {
+                result.Exception = ex;
+                result.State = SendMailState.FormatError;
+            }
+            catch (SmtpException ex)
+            {
+                result.Exception = ex;
+                result.State = SendMailState.SmtpError;
+            }
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+                result.State = SendMailState.Error;
+            }
 
+
+            return result;
+
+        }
+
+        public SendMailResult Send()
+        {
+            var result = new SendMailResult();
+
+            try
+            {
+
+                using (var message = PrepareMailMessage())
+                {
+                    using (SmtpClient mailClient = PrepareSmtpClient())
+                    {
+                        mailClient.Send(message);
+                    }
                     result.State = SendMailState.Ok;
                 }
 
@@ -453,7 +514,7 @@ namespace TypeLess.Mail
             {
                 return null;
             }
-            
+
         }
 
         public void ConvertTo(HtmlNode node, TextWriter outText)

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Text;
 using TypeLess;
 
 namespace TypeLess.Mail
@@ -21,5 +22,26 @@ namespace TypeLess.Mail
         public System.Net.Mail.SmtpDeliveryMethod DeliveryMethod { get; set; }
 
         public int SMTPSSLPort { get; set; }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendFormat("Server: {0}", SMTPServer);
+            sb.AppendLine();
+            if (SMTPAuthentication) {
+                sb.AppendFormat("Auth: {0}/{1}", SMTPUsername, SMTPPassword);
+            }
+            sb.AppendLine();
+            if (SMTPEnableSSL)
+            {
+                sb.AppendFormat("SSL Port: {0}", SMTPSSLPort);
+            }
+            else {
+                sb.AppendFormat("Port: {0}", SMTPort);
+            }
+            
+            return sb.ToString();
+        }
     }
 }
