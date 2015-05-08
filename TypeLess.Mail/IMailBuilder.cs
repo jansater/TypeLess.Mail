@@ -39,7 +39,7 @@ namespace TypeLess.Mail
 
     public interface IMailConfiguration : IFluentInterface
     {
-        IMailConfiguration SMTPServer(string server);
+        IMailConfiguration SMTPServer(string server, int? smtpPort = null);
         /// <summary>
         /// Defaults to false
         /// </summary>
@@ -54,7 +54,7 @@ namespace TypeLess.Mail
         /// <param name="enable">if set to <c>true</c> [enable].</param>
         /// <param name="sslPort">The SSL port. null = use default ports 25, 587</param>
         /// <returns>IMailConfiguration.</returns>
-        IMailConfiguration EnableSSL(bool enable, int? sslPort);
+        IMailConfiguration EnableSSL(bool enable, int? sslPort = null);
 
         IMailConfiguration SmtpDefaultFromEmail(string email);
         /// <summary>

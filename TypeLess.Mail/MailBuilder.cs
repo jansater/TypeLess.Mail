@@ -56,11 +56,14 @@ namespace TypeLess.Mail
             get { return this; }
         }
 
-        public IMailConfiguration SMTPServer(string server)
+        public IMailConfiguration SMTPServer(string server, int? smtpPort)
         {
             server.If("smtp server").IsNull.IsEmptyOrWhitespace.ThenThrow();
 
             _mail.Settings.SMTPServer = server;
+            if (smtpPort.HasValue) {
+                _mail.Settings.SMTPort = smtpPort.Value;
+            }
             return this;
         }
 
