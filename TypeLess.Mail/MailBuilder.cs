@@ -84,13 +84,13 @@ namespace TypeLess.Mail
             return this;
         }
 
-        public IMailConfiguration EnableSSL
+        IMailConfiguration IMailConfiguration.EnableSSL(bool enable, int? sslPort)
         {
-            get
-            {
-                _mail.Settings.SMTPEnableSSL = true;
-                return this;
+            _mail.Settings.SMTPEnableSSL = enable;
+            if (sslPort.HasValue) {
+                _mail.Settings.SMTPSSLPort = sslPort.Value;
             }
+            return this;
         }
 
         public IMailConfiguration SmtpDefaultFromEmail(string email)

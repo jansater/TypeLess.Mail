@@ -47,11 +47,15 @@ namespace TypeLess.Mail
         /// <param name="password"></param>
         /// <returns></returns>
         IMailConfiguration RequiresSMTPAuthentication(bool enable, string username, string password);
-        /// <summary>
-        /// Defaults to false
-        /// </summary>
-        IMailConfiguration EnableSSL { get; }
         
+        /// <summary>
+        /// Enables the SSL.
+        /// </summary>
+        /// <param name="enable">if set to <c>true</c> [enable].</param>
+        /// <param name="sslPort">The SSL port. null = use default ports 25, 587</param>
+        /// <returns>IMailConfiguration.</returns>
+        IMailConfiguration EnableSSL(bool enable, int? sslPort);
+
         IMailConfiguration SmtpDefaultFromEmail(string email);
         /// <summary>
         /// Defaults to 25

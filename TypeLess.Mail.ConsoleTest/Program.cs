@@ -24,8 +24,8 @@ namespace TypeLess.Mail.ConsoleTest
             return await MailBuilder.Create(new TemplateService())
                     .Configure.SMTPServer("smtp.sendgrid.net")
                     .RequiresSMTPAuthentication(true, "tobias.jansater", "Ramsan2005")
-                    .EnableSSL
-                    .SmtpPort(587).SmtpSSLPort(587)
+                    .EnableSSL(true, 587)
+                    .SmtpPort(587)
                     .Done
                     .From("tobias.jansater@symbio.com", "Tobias Jansäter")
                     .WithSubject("Some subject")
