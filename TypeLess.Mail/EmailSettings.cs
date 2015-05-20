@@ -27,10 +27,11 @@ namespace TypeLess.Mail
         {
             var sb = new StringBuilder();
 
-            sb.AppendFormat("Server: {0}", SMTPServer);
+            sb.AppendFormat("Server: {0}", SMTPServer ?? "");
             sb.AppendLine();
+
             if (SMTPAuthentication) {
-                sb.AppendFormat("Auth: {0}/{1}", SMTPUsername, SMTPPassword);
+                sb.AppendFormat("Auth: {0}/{1}", SMTPUsername ?? "", "*******");
             }
             sb.AppendLine();
             if (SMTPEnableSSL)
@@ -40,7 +41,15 @@ namespace TypeLess.Mail
             else {
                 sb.AppendFormat("Port: {0}", SMTPort);
             }
-            
+            sb.AppendLine();
+            sb.AppendFormat("Template Directory: {0}", TemplateDirectory ?? "");
+            sb.AppendLine();
+            sb.AppendFormat("Charset: {0}", CharSet ?? "");
+            sb.AppendLine();
+            sb.AppendFormat("Subject encoding: {0}", SubjectEncoding == null ? "" : SubjectEncoding.EncodingName);
+            sb.AppendLine();
+            sb.AppendFormat("Body encoding: {0}", BodyEncoding == null ? "" : BodyEncoding.EncodingName);
+
             return sb.ToString();
         }
     }
