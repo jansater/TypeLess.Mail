@@ -105,14 +105,14 @@ namespace TypeLess.Mail
 
         public IMailConfiguration SmtpPort(int port)
         {
-            port.If("smtp port").IsSmallerThanOrEqualTo(0).ThenThrow();
+            port.If("smtp port").IsLessThanOrEqualTo(0).ThenThrow();
             _mail.Settings.SMTPort = port;
             return this;
         }
 
         public IMailConfiguration SmtpSSLPort(int port)
         {
-            port.If("smtp port").IsSmallerThanOrEqualTo(0).ThenThrow();
+            port.If("smtp port").IsLessThanOrEqualTo(0).ThenThrow();
             _mail.Settings.SMTPSSLPort = port;
             return this;
         }
@@ -284,16 +284,25 @@ namespace TypeLess.Mail
             }
         }
 
+        private string GetContactDisplayName(Contact contact) {
+            if (String.IsNullOrWhiteSpace(contact.Name) || contact.Name.Equals(contact.MailAddress, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            else {
+                return contact.Name;
+            }
+        }
+
         private MailMessage PrepareMailMessage()
         {
 
             Contact Organizer = null;
             MailMessage message = new MailMessage();
 
-
             if (_mail.From != null)
             {
-                message.From = new MailAddress(_mail.From.MailAddress, _mail.From.Name);
+                message.From = new MailAddress(_mail.From.MailAddress, GetContactDisplayName(_mail.From));
                 Organizer = _mail.From;
             }
             else
@@ -304,7 +313,7 @@ namespace TypeLess.Mail
 
             if (_mail.ReplyTo != null)
             {
-                message.ReplyToList.Add(new MailAddress(_mail.ReplyTo.MailAddress, _mail.ReplyTo.Name));
+                message.ReplyToList.Add(new MailAddress(_mail.ReplyTo.MailAddress, GetContactDisplayName(_mail.ReplyTo)));
                 Organizer = _mail.ReplyTo;
             }
 
@@ -312,15 +321,15 @@ namespace TypeLess.Mail
             {
                 if (contact.Type == ContactType.To || contact.Type == ContactType.Required)
                 {
-                    message.To.Add(new MailAddress(contact.MailAddress, contact.Name));
+                    message.To.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact)));
                 }
                 if (contact.Type == ContactType.Cc || contact.Type == ContactType.Optional)
                 {
-                    message.CC.Add(new MailAddress(contact.MailAddress, contact.Name));
+                    message.CC.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact)));
                 }
                 if (contact.Type == ContactType.Bcc || contact.Type == ContactType.Resource)
                 {
-                    message.Bcc.Add(new MailAddress(contact.MailAddress, contact.Name));
+                    message.Bcc.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact)));
                 }
             }
 
