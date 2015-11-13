@@ -22,9 +22,9 @@ namespace TypeLess.Mail
         IMailReadyToSend
     {
         private TypeLessMail _mail;
-        private ITemplateService _templateService;
+        private IRazorEngineService _templateService;
 
-        private MailBuilder(ITemplateService _razorTemplateService)
+        private MailBuilder(IRazorEngineService _razorTemplateService)
         {
             _templateService = _razorTemplateService;
             _mail = new TypeLessMail();
@@ -41,7 +41,7 @@ namespace TypeLess.Mail
             _mail.Settings.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
         }
 
-        public static IMailBuilder Create(ITemplateService service)
+        public static IMailBuilder Create(IRazorEngineService service)
         {
             return new MailBuilder(service);
         }
@@ -218,8 +218,18 @@ namespace TypeLess.Mail
         public IPartialMailIIII AndTemplate<T>(string templateFileName, T templateData)
         {
             _templateService.If("_templateService").IsNull.ThenThrow();
-            var body = _templateService.Parse(File.ReadAllText(Path.Combine(_mail.Settings.TemplateDirectory, templateFileName)), templateData, null, templateFileName);
-            _mail.Body = body;
+
+            try
+            {
+                var body = _templateService.RunCompile(templateFileName, null, templateData);
+                //var body = _templateService.Parse(File.ReadAllText(Path.Combine(_mail.Settings.TemplateDirectory, templateFileName)), templateData, null, templateFileName);
+                _mail.Body = body;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+            
             return this;
         }
 

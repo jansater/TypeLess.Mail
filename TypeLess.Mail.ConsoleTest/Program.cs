@@ -1,8 +1,11 @@
-﻿using RazorEngine.Templating;
+﻿using RazorEngine;
+using RazorEngine.Configuration;
+using RazorEngine.Templating;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,22 +15,21 @@ namespace TypeLess.Mail.ConsoleTest
     {
         static void Main(string[] args)
         {
-
             SendTestMail();
-
-
             Console.ReadLine();
-
         }
 
         public static async Task<SendMailResult> SendTestMail() {
-            return await MailBuilder.Create(new TemplateService())
-                    .Configure.SMTPServer("smtp.sendgrid.net")
-                    .RequiresSMTPAuthentication(true, "tobias.jansater", "Ramsan2005")
-                    .EnableSSL(true, 587)
-                    .SmtpPort(587)
+
+            var templateConfig = new TemplateServiceConfiguration();
+            var templateFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "EmailTemplates");
+            templateConfig.TemplateManager = new ResolvePathTemplateManager(new string[] { templateFolder });
+            var templateService = RazorEngineService.Create(templateConfig);
+            
+            return await MailBuilder.Create(templateService)
+                    .Configure.SMTPServer("localhost")
                     .Done
-                    .From("tobias.jansater@symbio.com", "Tobias Jansäter")
+                    .From("tobias.jansater@test.com", "Tobias Jansäter")
                     .WithSubject("Some subject")
                     .AndTemplate("SampleTemplate.cshtml", new { Name = "Test User" })
                     .AddMeeting(new Meeting(DateTime.Now.AddHours(1), DateTime.Now.AddHours(3))
