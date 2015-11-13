@@ -218,17 +218,8 @@ namespace TypeLess.Mail
         public IPartialMailIIII AndTemplate<T>(string templateFileName, T templateData)
         {
             _templateService.If("_templateService").IsNull.ThenThrow();
-
-            try
-            {
-                var body = _templateService.RunCompile(templateFileName, null, templateData);
-                //var body = _templateService.Parse(File.ReadAllText(Path.Combine(_mail.Settings.TemplateDirectory, templateFileName)), templateData, null, templateFileName);
-                _mail.Body = body;
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
+            var body = _templateService.RunCompile(templateFileName, null, templateData);
+            _mail.Body = body;
             
             return this;
         }
