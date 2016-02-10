@@ -141,7 +141,7 @@ namespace TypeLess.Mail
 
     public interface IMailReadyToSend : IFluentInterface
     {
-        Stream GetMessageAsEmlStream();
+        Stream GetMessageAsEmlStream(bool asUnsent = false);
         TypeLessMail GetMessage();
         Task<SendMailResult> SendAsync();
         SendMailResult Send();

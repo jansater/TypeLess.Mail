@@ -590,11 +590,15 @@ namespace TypeLess.Mail
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public Stream GetMessageAsEmlStream()
+        public Stream GetMessageAsEmlStream(bool asUnsent = false)
         {
-            MemoryStream str = new MemoryStream();
+            var str = new MemoryStream();
             using (var message = PrepareMailMessage())
             {
+                if (asUnsent) {
+                    message.Headers.Add("X-Unsent", "1");
+                }
+
                 using (SmtpClient client = PrepareSmtpClient())
                 {
                     var id = Guid.NewGuid();
@@ -602,7 +606,7 @@ namespace TypeLess.Mail
                     var tempFolder = Path.Combine(Path.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name);
 
                     tempFolder = Path.Combine(tempFolder, "MailMessageToEMLTemp");
-
+                    
                     // create a temp folder to hold just this .eml file so that we can find it easily.
                     tempFolder = Path.Combine(tempFolder, id.ToString());
 
@@ -628,6 +632,7 @@ namespace TypeLess.Mail
                 }
                 
             }
+            str.Seek(0, SeekOrigin.Begin);
             return str;
         }
     }
