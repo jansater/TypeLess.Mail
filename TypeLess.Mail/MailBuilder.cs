@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -144,9 +145,7 @@ namespace TypeLess.Mail
             _mail.Settings.DeliveryMethod = deliveryMethod;
             return this;
         }
-
-
-
+        
         public IPartialMailI WithConfiguration(EmailSettings settings)
         {
             settings.If("settings").IsNull.ThenThrow();
@@ -488,7 +487,6 @@ namespace TypeLess.Mail
                     }
                     result.State = SendMailState.Ok;
                 }
-
             }
             catch (FormatException ex)
             {
@@ -505,8 +503,7 @@ namespace TypeLess.Mail
                 result.Exception = ex;
                 result.State = SendMailState.Error;
             }
-
-
+            
             return result;
 
         }
@@ -588,6 +585,51 @@ namespace TypeLess.Mail
             }
         }
 
+        /// <summary>
+        /// Converts a MailMessage to an EML file stream.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public Stream GetMessageAsEmlStream()
+        {
+            MemoryStream str = new MemoryStream();
+            using (var message = PrepareMailMessage())
+            {
+                using (SmtpClient client = PrepareSmtpClient())
+                {
+                    var id = Guid.NewGuid();
+
+                    var tempFolder = Path.Combine(Path.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name);
+
+                    tempFolder = Path.Combine(tempFolder, "MailMessageToEMLTemp");
+
+                    // create a temp folder to hold just this .eml file so that we can find it easily.
+                    tempFolder = Path.Combine(tempFolder, id.ToString());
+
+                    if (!Directory.Exists(tempFolder))
+                    {
+                        Directory.CreateDirectory(tempFolder);
+                    }
+
+                    client.UseDefaultCredentials = true;
+                    client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory;
+                    client.PickupDirectoryLocation = tempFolder;
+                    client.Send(message);
+
+                    // tempFolder should contain 1 eml file
+
+                    var filePath = Directory.GetFiles(tempFolder).Single();
+
+                    // stream out the contents
+                    using (var fs = new FileStream(filePath, FileMode.Open))
+                    {
+                        fs.CopyTo(str);
+                    }
+                }
+                
+            }
+            return str;
+        }
     }
 
 }

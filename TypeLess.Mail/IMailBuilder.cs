@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -140,6 +141,7 @@ namespace TypeLess.Mail
 
     public interface IMailReadyToSend : IFluentInterface
     {
+        Stream GetMessageAsEmlStream();
         TypeLessMail GetMessage();
         Task<SendMailResult> SendAsync();
         SendMailResult Send();

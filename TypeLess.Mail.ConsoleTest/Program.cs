@@ -56,12 +56,12 @@ namespace TypeLess.Mail.ConsoleTest
                     .From("tobias.jansater@test.com", "Tobias Jansäter")
                     .WithSubject("Some subject")
                     .AndTemplate("SampleTemplate.cshtml", new { Name = "Test User" })
-                    .AddMeeting(new Meeting(DateTime.Now.AddHours(1), DateTime.Now.AddHours(3))
-                    {
-                        Description = "Do you know what the next step should be for TypeLess.Mail?",
-                        Location = "The usual place",
-                        Summary = "We need to go through some new features"
-                    })
+                    //.AddMeeting(new Meeting(DateTime.Now.AddHours(1), DateTime.Now.AddHours(3))
+                    //{
+                    //    Description = "Do you know what the next step should be for TypeLess.Mail?",
+                    //    Location = "The usual place",
+                    //    Summary = "We need to go through some new features"
+                    //})
                     .To(new Contact("tobias.jansater@rapidsolutions.se", ContactType.To))
                     .SendAsync();
         }
