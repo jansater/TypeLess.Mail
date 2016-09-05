@@ -1,0 +1,13 @@
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\TypeLess.Mail.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\TypeLess.Mail.pdb
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\HtmlAgilityPack.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\RazorEngine.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\System.Web.Razor.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\TypeLess.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\HtmlAgilityPack.pdb
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\HtmlAgilityPack.xml
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\RazorEngine.xml
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\System.Web.Razor.xml
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Release\TypeLess.Mail.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Release\TypeLess.Mail.pdb
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Release\TypeLess.Mail.csprojResolveAssemblyReference.cache

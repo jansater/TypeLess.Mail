@@ -1,0 +1,12 @@
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\TypeLess.Mail.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\TypeLess.Mail.pdb
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\HtmlAgilityPack.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\RazorEngine.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\System.Web.Razor.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\TypeLess.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\HtmlAgilityPack.pdb
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\HtmlAgilityPack.xml
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\RazorEngine.xml
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Debug\System.Web.Razor.xml
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Debug\TypeLess.Mail.dll
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Debug\TypeLess.Mail.pdb
