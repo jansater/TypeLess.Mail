@@ -93,6 +93,13 @@ namespace TypeLess.Mail
         IMailConfiguration SmtpDeliveryMethod(SmtpDeliveryMethod deliveryMethod);
 
         /// <summary>
+        /// Defaults to 7-bit
+        /// </summary>
+        /// <param name="deliveryFormat"></param>
+        /// <returns></returns>
+        IMailConfiguration SmtpDeliveryFormat(SmtpDeliveryFormat deliveryFormat);
+
+        /// <summary>
         /// Defaults to 587
         /// </summary>
         /// <param name="port"></param>
