@@ -145,7 +145,13 @@ namespace TypeLess.Mail
             _mail.Settings.DeliveryMethod = deliveryMethod;
             return this;
         }
-        
+
+        public IMailConfiguration SmtpDeliveryFormat(SmtpDeliveryFormat deliveryFormat)
+        {
+            _mail.Settings.DeliveryFormat = deliveryFormat;
+            return this;
+        }
+
         public IPartialMailI WithConfiguration(EmailSettings settings)
         {
             settings.If("settings").IsNull.ThenThrow();
