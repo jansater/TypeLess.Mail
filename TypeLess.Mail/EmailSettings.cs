@@ -20,6 +20,7 @@ namespace TypeLess.Mail
         public string TemplateDirectory { get; set; }
 
         public System.Net.Mail.SmtpDeliveryMethod DeliveryMethod { get; set; }
+        public System.Net.Mail.SmtpDeliveryFormat DeliveryFormat { get; set; }
 
         public int SMTPSSLPort { get; set; }
 

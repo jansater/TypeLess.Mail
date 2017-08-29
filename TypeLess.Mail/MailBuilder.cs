@@ -302,7 +302,7 @@ namespace TypeLess.Mail
 
             if (_mail.From != null)
             {
-                message.From = new MailAddress(_mail.From.MailAddress, GetContactDisplayName(_mail.From));
+                message.From = new MailAddress(_mail.From.MailAddress, GetContactDisplayName(_mail.From), Encoding.UTF8);
                 Organizer = _mail.From;
             }
             else
@@ -313,7 +313,7 @@ namespace TypeLess.Mail
 
             if (_mail.ReplyTo != null)
             {
-                message.ReplyToList.Add(new MailAddress(_mail.ReplyTo.MailAddress, GetContactDisplayName(_mail.ReplyTo)));
+                message.ReplyToList.Add(new MailAddress(_mail.ReplyTo.MailAddress, GetContactDisplayName(_mail.ReplyTo), Encoding.UTF8));
                 Organizer = _mail.ReplyTo;
             }
 
@@ -321,15 +321,15 @@ namespace TypeLess.Mail
             {
                 if (contact.Type == ContactType.To || contact.Type == ContactType.Required)
                 {
-                    message.To.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact)));
+                    message.To.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact), Encoding.UTF8));
                 }
                 if (contact.Type == ContactType.Cc || contact.Type == ContactType.Optional)
                 {
-                    message.CC.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact)));
+                    message.CC.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact), Encoding.UTF8));
                 }
                 if (contact.Type == ContactType.Bcc || contact.Type == ContactType.Resource)
                 {
-                    message.Bcc.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact)));
+                    message.Bcc.Add(new MailAddress(contact.MailAddress, GetContactDisplayName(contact), Encoding.UTF8));
                 }
             }
 
@@ -417,7 +417,7 @@ namespace TypeLess.Mail
             }
 
             SmtpClient mailClient = new SmtpClient(host, port);
-
+            mailClient.DeliveryFormat = _mail.Settings.DeliveryFormat;
             mailClient.DeliveryMethod = _mail.Settings.DeliveryMethod;
 
             if (_mail.Settings.SMTPAuthentication)
