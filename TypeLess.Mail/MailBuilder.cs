@@ -361,7 +361,7 @@ namespace TypeLess.Mail
 
             foreach (var attachment in _mail.Attachments)
             {
-                message.Attachments.Add(new System.Net.Mail.Attachment(attachment.ContentStream, attachment.Name, attachment.MediaType));
+                message.Attachments.Add(new System.Net.Mail.Attachment(attachment.OpenContentStream(), attachment.Name, attachment.MediaType));
             }
 
             string bodyText = _mail.Body;

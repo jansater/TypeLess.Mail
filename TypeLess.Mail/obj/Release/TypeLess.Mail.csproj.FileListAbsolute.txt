@@ -11,3 +11,4 @@ C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\bin\Release\System.Web.Razor.xm
 C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Release\TypeLess.Mail.dll
 C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Release\TypeLess.Mail.pdb
 C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Release\TypeLess.Mail.csprojResolveAssemblyReference.cache
+C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail\obj\Release\TypeLess.Mail.csproj.CoreCompileInputs.cache

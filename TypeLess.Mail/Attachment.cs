@@ -9,15 +9,20 @@ namespace TypeLess.Mail
 {
     public class Attachment
     {
-        public Stream ContentStream { get; set; }
+        public byte[] Content { get; set; }
         public string Name { get; set; }
         public string MediaType { get; set; }
-
-        public Attachment(Stream contentStream, string name, string mediaType)
+        
+        public Attachment(byte[] content, string name, string mediaType)
         {
-            this.ContentStream = contentStream;
+            this.Content = content;
             this.Name = name;
             this.MediaType = mediaType;
         }
+
+        internal Stream OpenContentStream() {
+            return new MemoryStream(Content);
+        }
+        
     }
 }
