@@ -461,6 +461,7 @@ namespace TypeLess.Mail
                     {
                         mailClient = PrepareSmtpClient();
                         await mailClient.SendMailAsync(message);
+                        result.State = SendMailState.Ok;
                     }
                     finally
                     {
@@ -471,11 +472,12 @@ namespace TypeLess.Mail
                         }
                         catch (Exception ex)
                         {
-                            result.ExtraLog = "Failed to dispose smtp client, exception: " + ex.Message;
+                            result.Exception = ex;
+                            result.ExtraLog = "Failed to dispose smtp client (most likely the smtp server made an abnormal close), exception: " + ex.Message;
+                            result.State = SendMailState.Error;
                         }
                     }
                     
-                    result.State = SendMailState.Ok;
                 }
 
             }
