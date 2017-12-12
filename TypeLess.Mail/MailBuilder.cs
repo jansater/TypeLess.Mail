@@ -456,10 +456,25 @@ namespace TypeLess.Mail
 
                 using (var message = PrepareMailMessage())
                 {
-                    using (SmtpClient mailClient = PrepareSmtpClient())
+                    SmtpClient mailClient = null;
+                    try
                     {
+                        mailClient = PrepareSmtpClient();
                         await mailClient.SendMailAsync(message);
                     }
+                    finally
+                    {
+                        //in case the remote host terminated the socket in an abnormal way
+                        try
+                        {
+                            mailClient.Dispose();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.ExtraLog = "Failed to dispose smtp client, exception: " + ex.Message;
+                        }
+                    }
+                    
                     result.State = SendMailState.Ok;
                 }
 
@@ -479,8 +494,7 @@ namespace TypeLess.Mail
                 result.Exception = ex;
                 result.State = SendMailState.Error;
             }
-
-
+            
             return result;
 
         }

@@ -10,5 +10,6 @@ namespace TypeLess.Mail
     {
         public Exception Exception { get; set; }
         public SendMailState State { get; set; }
+        public string ExtraLog { get; set; }
     }
 }
