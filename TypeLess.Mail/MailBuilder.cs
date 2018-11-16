@@ -413,10 +413,14 @@ namespace TypeLess.Mail
                 calendarView.TransferEncoding = TransferEncoding.Base64;
                 message.AlternateViews.Add(calendarView);
             }
-
+            
             foreach (var header in _mail.Headers)
             {
                 message.Headers.Add(header.Item1, header.Item2);
+            }
+
+            if (_mail.DeliveryNotification.HasValue) {
+                message.DeliveryNotificationOptions = _mail.DeliveryNotification.Value;
             }
             
             return message;
@@ -676,6 +680,12 @@ namespace TypeLess.Mail
 
             _mail.Headers.Add(Tuple.Create(name, value));
 
+            return this;
+        }
+
+        public IPartialMailIIII AsFailedDeliveryReport()
+        {
+            _mail.DeliveryNotification = DeliveryNotificationOptions.OnFailure;
             return this;
         }
     }

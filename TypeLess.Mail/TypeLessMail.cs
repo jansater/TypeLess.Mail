@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,5 +29,6 @@ namespace TypeLess.Mail
 
         public Contact ReplyTo { get; set; }
         public List<Tuple<string, string>> Headers { get; set; }
+        public DeliveryNotificationOptions? DeliveryNotification { get; internal set; }
     }
 }
