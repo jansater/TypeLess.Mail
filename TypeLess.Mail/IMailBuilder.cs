@@ -128,6 +128,7 @@ namespace TypeLess.Mail
 
     public interface IPartialMailII : IFluentInterface
     {
+        IPartialMailII WithHeader(string name, string value);
         IPartialMailIII WithSubject(string header);
         IPartialMailIII WithoutSubject { get; }
     }

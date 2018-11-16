@@ -17,3 +17,5 @@ C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail.ConsoleTest\obj\Release\TypeLes
 C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail.ConsoleTest\obj\Release\TypeLess.Mail.ConsoleTest.pdb
 C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail.ConsoleTest\bin\Release\EmailTemplates\_Layout.cshtml
 C:\Development\Rapid\TypeLess.Mail\TypeLess.Mail.ConsoleTest\obj\Release\TypeLess.Mail.ConsoleTest.csproj.CoreCompileInputs.cache
+C:\Development\Development\Rapid\TypeLess.Mail\TypeLess.Mail.ConsoleTest\obj\Release\TypeLess.Mail.ConsoleTest.csprojAssemblyReference.cache
+C:\Development\Development\Rapid\TypeLess.Mail\TypeLess.Mail.ConsoleTest\obj\Release\TypeLess.Mail.ConsoleTest.csproj.CoreCompileInputs.cache

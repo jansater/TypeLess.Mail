@@ -414,6 +414,11 @@ namespace TypeLess.Mail
                 message.AlternateViews.Add(calendarView);
             }
 
+            foreach (var header in _mail.Headers)
+            {
+                message.Headers.Add(header.Item1, header.Item2);
+            }
+            
             return message;
 
         }
@@ -662,6 +667,16 @@ namespace TypeLess.Mail
             }
             str.Seek(0, SeekOrigin.Begin);
             return str;
+        }
+
+        public IPartialMailII WithHeader(string name, string value)
+        {
+            name.If("name").IsNull.ThenThrow();
+            value.If("value").IsNull.ThenThrow();
+
+            _mail.Headers.Add(Tuple.Create(name, value));
+
+            return this;
         }
     }
 

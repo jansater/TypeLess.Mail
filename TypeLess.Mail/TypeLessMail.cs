@@ -26,5 +26,6 @@ namespace TypeLess.Mail
         public IList<Attachment> Attachments { get; set; }
 
         public Contact ReplyTo { get; set; }
+        public List<Tuple<string, string>> Headers { get; set; }
     }
 }

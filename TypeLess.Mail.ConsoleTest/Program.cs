@@ -54,6 +54,7 @@ namespace TypeLess.Mail.ConsoleTest
                     .Configure.SMTPServer("localhost")
                     .Done
                     .From("tobias.jansater@test.com", "Tobias Jansäter")
+                    .WithHeader("test", "sdfsdf")
                     .WithSubject("Some subject")
                     .AndTemplate("SampleTemplate.cshtml", new { Name = "Test User" })
                     //.AddMeeting(new Meeting(DateTime.Now.AddHours(1), DateTime.Now.AddHours(3))
