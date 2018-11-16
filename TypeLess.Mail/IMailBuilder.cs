@@ -145,7 +145,6 @@ namespace TypeLess.Mail
         IPartialMailIIII AddMeeting(Meeting meeting);
         IMailReadyToSend To(params Contact[] recipients);
         IPartialMailIIII ReplyTo(Contact contact);
-        IPartialMailIIII AsFailedDeliveryReport();
     }
 
     public interface IMailReadyToSend : IFluentInterface

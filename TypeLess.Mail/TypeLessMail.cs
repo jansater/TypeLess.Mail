@@ -29,6 +29,6 @@ namespace TypeLess.Mail
 
         public Contact ReplyTo { get; set; }
         public List<Tuple<string, string>> Headers { get; set; }
-        public DeliveryNotificationOptions? DeliveryNotification { get; internal set; }
+        
     }
 }

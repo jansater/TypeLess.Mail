@@ -419,10 +419,6 @@ namespace TypeLess.Mail
                 message.Headers.Add(header.Item1, header.Item2);
             }
 
-            if (_mail.DeliveryNotification.HasValue) {
-                message.DeliveryNotificationOptions = _mail.DeliveryNotification.Value;
-            }
-            
             return message;
 
         }
@@ -441,7 +437,7 @@ namespace TypeLess.Mail
             SmtpClient mailClient = new SmtpClient(host, port);
             mailClient.DeliveryFormat = _mail.Settings.DeliveryFormat;
             mailClient.DeliveryMethod = _mail.Settings.DeliveryMethod;
-
+            
             if (_mail.Settings.SMTPAuthentication)
             {
                 mailClient.UseDefaultCredentials = false;
@@ -683,11 +679,7 @@ namespace TypeLess.Mail
             return this;
         }
 
-        public IPartialMailIIII AsFailedDeliveryReport()
-        {
-            _mail.DeliveryNotification = DeliveryNotificationOptions.OnFailure;
-            return this;
-        }
+        
     }
 
 }
