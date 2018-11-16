@@ -18,6 +18,7 @@ namespace TypeLess.Mail
             Settings = new EmailSettings();
             Attachments = new List<Attachment>();
             To = new List<Contact>();
+            Headers = new List<Tuple<string, string>>();
         }
 
         public string Subject { get; set; }
