@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TypeLess.Mail.ConsoleTest</RootNamespace>
     <AssemblyName>TypeLess.Mail.ConsoleTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -62,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TypeLess.Mail\TypeLess.Mail.csproj">
-      <Project>{30e7df36-ee08-4d87-84d4-eb9cda0a6176}</Project>
+      <Project>{293f6f24-f78c-490a-a4c0-8df0de5fbf29}</Project>
       <Name>TypeLess.Mail</Name>
     </ProjectReference>
   </ItemGroup>
