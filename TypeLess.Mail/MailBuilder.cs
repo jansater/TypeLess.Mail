@@ -452,13 +452,16 @@ namespace TypeLess.Mail
             return mailClient;
         }
 
+        /// <summary>
+        /// removed async
+        /// </summary>
+        /// <returns></returns>
         public async Task<SendMailResult> SendAsync()
         {
             var result = new SendMailResult();
 
             try
             {
-
                 using (var message = PrepareMailMessage())
                 {
                     SmtpClient mailClient = null;
@@ -479,7 +482,6 @@ namespace TypeLess.Mail
                         {
                             result.Exception = ex;
                             result.ExtraLog = "Failed to dispose smtp client (most likely the smtp server made an abnormal close), exception: " + ex.Message;
-                            result.State = SendMailState.Error;
                         }
                     }
                     
@@ -515,11 +517,26 @@ namespace TypeLess.Mail
             {
                 using (var message = PrepareMailMessage())
                 {
-                    using (SmtpClient mailClient = PrepareSmtpClient())
+                    SmtpClient mailClient = null;
+                    try
                     {
-                        mailClient.Send(message);
+                        mailClient = PrepareSmtpClient();
+                        mailClient.SendMailAsync(message);
+                        result.State = SendMailState.Ok;
                     }
-                    result.State = SendMailState.Ok;
+                    finally
+                    {
+                        //in case the remote host terminated the socket in an abnormal way
+                        try
+                        {
+                            mailClient.Dispose();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.Exception = ex;
+                            result.ExtraLog = "Failed to dispose smtp client (most likely the smtp server made an abnormal close), exception: " + ex.Message;
+                        }
+                    }
                 }
             }
             catch (FormatException ex)
