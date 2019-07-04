@@ -508,8 +508,9 @@ namespace TypeLess.Mail
 
         public SendMailResult Send()
         {
+            
             var result = new SendMailResult();
-
+            
             try
             {
                 using (var message = PrepareMailMessage())
